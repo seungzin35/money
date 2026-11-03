@@ -1,0 +1,70 @@
+site:
+  name: ZIN 머니
+  site: 'https://money.zinnote.kr'
+  base: '/'
+  trailingSlash: false
+
+  # googleSiteVerificationId: (Google Search Console 인증 코드를 여기에 입력)
+
+# Default SEO metadata
+metadata:
+  title:
+    default: ZIN 머니
+    template: '%s — ZIN 머니'
+  description: '사회초년생을 위한 돈 관리 기초. 신용점수, 카드, 예금·적금, 대출, 보험, 세금과 월급을 공식 자료를 바탕으로 쉽게 정리합니다.'
+  robots:
+    index: true
+    follow: true
+  openGraph:
+    site_name: ZIN 머니
+    images:
+      - url: '~/assets/images/default.png'
+        width: 1200
+        height: 628
+    type: website
+  twitter:
+    cardType: summary_large_image
+
+i18n:
+  language: ko
+  textDirection: ltr
+
+apps:
+  blog:
+    isEnabled: true
+    postsPerPage: 10
+
+    post:
+      isEnabled: true
+      permalink: '/%slug%' # Variables: %slug%, %year%, %month%, %day%, %hour%, %minute%, %second%, %category%
+      robots:
+        index: true
+
+    list:
+      isEnabled: true
+      pathname: 'blog' # Blog main path, you can change this to "articles" (/articles)
+      robots:
+        index: true
+
+    category:
+      isEnabled: true
+      pathname: 'category' # Category main path /category/some-category, you can change this to "group" (/group/some-category)
+      robots:
+        index: true
+
+    tag:
+      isEnabled: true
+      pathname: 'tag' # Tag main path /tag/some-tag, you can change this to "topics" (/topics/some-category)
+      robots:
+        index: false
+
+    isRelatedPostsEnabled: true
+    relatedPostsCount: 3
+
+analytics:
+  vendors:
+    googleAnalytics:
+      id: null # or "G-XXXXXXXXXX"
+
+ui:
+  theme: 'system' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"

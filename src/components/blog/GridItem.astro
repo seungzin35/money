@@ -1,0 +1,73 @@
+---
+import { APP_BLOG } from 'astrowind:config';
+import type { Post } from '~/types';
+
+import Image from '~/components/common/Image.astro';
+
+import { findImage } from '~/utils/images';
+import { getPermalink } from '~/utils/permalinks';
+import { getFormattedDate } from '~/utils/utils';
+import CoverArt from '~/components/blog/CoverArt.astro';
+
+export interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const image = await findImage(post.image);
+
+const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : '';
+const Wrapper = link ? 'a' : 'div';
+---
+
+<article
+  class="group transition intersect-once intersect-quarter motion-safe:md:opacity-0 motion-safe:md:intersect:animate-fade"
+>
+  <Wrapper
+    href={link || undefined}
+    class="block h-full overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+  >
+    <div class="relative aspect-video overflow-hidden bg-slate-100 dark:bg-slate-800">
+      {
+        image ? (
+          <Image
+            src={image}
+            class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            widths={[400, 900]}
+            width={900}
+            height={506}
+            sizes="(max-width: 900px) 400px, 900px"
+            alt={post.title}
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <CoverArt
+            category={post.category?.title}
+            icon={post.coverIcon}
+            title={post.title}
+            coverTitle={post.coverTitle}
+            coverSub={post.coverSub}
+          />
+        )
+      }
+    </div>
+
+    <div class="p-5">
+      <div class="mb-2 flex items-center gap-2 text-sm text-muted dark:text-slate-400">
+        {post.category && <span class="font-semibold text-primary dark:text-emerald-300">{post.category.title}</span>}
+        {post.category && <span aria-hidden="true">·</span>}
+        <time datetime={post.publishDate.toISOString()}>{getFormattedDate(post.publishDate)}</time>
+      </div>
+
+      <h3
+        class="text-lg font-bold leading-snug mb-2 font-heading text-heading transition group-hover:text-primary dark:text-slate-200 dark:group-hover:text-emerald-300"
+      >
+        {post.title}
+      </h3>
+
+      {post.excerpt && <p class="text-muted dark:text-slate-400 line-clamp-2">{post.excerpt}</p>}
+    </div>
+  </Wrapper>
+</article>

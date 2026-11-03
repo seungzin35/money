@@ -1,0 +1,142 @@
+---
+import { Icon } from 'astro-icon/components';
+import { SITE } from 'astrowind:config';
+import { categories } from '~/navigation';
+
+export interface Props {
+  category?: string;
+  /** Per-post icon; falls back to the category icon. */
+  icon?: string;
+  /** Post title, used when there is no coverTitle. */
+  title?: string;
+  /** Headline: '|' breaks lines, [brackets] mark a keyword in green. */
+  coverTitle?: string;
+  /** Short line under the headline. */
+  coverSub?: string;
+  /** Kept for callers; the cover scales to its box on its own. */
+  size?: 'card' | 'hero';
+}
+
+const { category, icon: postIcon, title = '', coverTitle, coverSub } = Astro.props;
+
+// Report-style cover: deep navy panel, white headline with green keywords,
+// a thin rising chart line and the category icon in a ring.
+const icon = postIcon || categories.find(({ text }) => text === category)?.icon || 'tabler:coin';
+
+// Without a coverTitle, use the title and move a trailing "(...)" to the sub line.
+const match = title.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+const headline = coverTitle ?? (match ? match[1] : title);
+const sub = coverSub ?? (match ? match[2] : undefined);
+
+const lines = headline.split('|').map((line) =>
+  line
+    .split(/(\[[^\]]+\])/)
+    .filter(Boolean)
+    .map((part) =>
+      part.startsWith('[') && part.endsWith(']') ? { text: part.slice(1, -1), mark: true } : { text: part, mark: false }
+    )
+);
+const long = !coverTitle && headline.length > 14;
+---
+
+<div class="cover relative h-full w-full overflow-hidden bg-[#0f2440]" aria-hidden="true">
+  <svg class="absolute inset-0 h-full w-full" viewBox="0 0 160 90" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="cover-fill" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#10b981" stop-opacity="0.28"></stop>
+        <stop offset="1" stop-color="#10b981" stop-opacity="0"></stop>
+      </linearGradient>
+    </defs>
+    <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="0.3">
+      <line x1="0" y1="22.5" x2="160" y2="22.5"></line>
+      <line x1="0" y1="45" x2="160" y2="45"></line>
+      <line x1="0" y1="67.5" x2="160" y2="67.5"></line>
+    </g>
+    <path d="M0 80 L24 74 L44 77 L68 64 L90 67 L112 52 L134 55 L160 38 L160 90 L0 90 Z" fill="url(#cover-fill)"></path>
+    <path
+      d="M0 80 L24 74 L44 77 L68 64 L90 67 L112 52 L134 55 L160 38"
+      fill="none"
+      stroke="#34d399"
+      stroke-width="1.5"
+      vector-effect="non-scaling-stroke"></path>
+  </svg>
+
+  <div class="ring absolute flex items-center justify-center rounded-full border border-white/15 bg-white/5">
+    <Icon
+      name={icon}
+      class="h-[46%] w-[46%] text-[#6ee7b7] transition duration-300 group-hover:scale-110 group-hover:-rotate-6"
+    />
+  </div>
+
+  <div class="relative flex h-full flex-col items-start">
+    {
+      category && (
+        <span class="badge flex items-center font-semibold tracking-wide text-[#6ee7b7]">
+          <span class="dot rounded-full bg-[#34d399]" />
+          {category}
+        </span>
+      )
+    }
+    <p
+      class:list={[
+        'headline font-extrabold tracking-tight text-white',
+        long ? 'headline-long line-clamp-3' : 'whitespace-nowrap',
+      ]}
+    >
+      {
+        lines.map((parts) => (
+          <span class="block">
+            {parts.map(({ text, mark }) => (
+              <span class={mark ? 'text-[#34d399]' : ''}>{text}</span>
+            ))}
+          </span>
+        ))
+      }
+    </p>
+    {sub && <span class="sub font-medium text-slate-300">{sub}</span>}
+    <span class="footer mt-auto font-semibold tracking-wider text-slate-400">{SITE.name}</span>
+  </div>
+</div>
+
+<style>
+  /* One unit "u" that fits both the 16:9 cards and the wider post header. */
+  .cover {
+    container-type: size;
+    --u: min(6.2cqw, 11cqh);
+  }
+  .cover > div:last-child {
+    padding: calc(var(--u) * 0.9) calc(var(--u) * 1.05) calc(var(--u) * 0.7);
+  }
+  .badge {
+    gap: calc(var(--u) * 0.25);
+    font-size: calc(var(--u) * 0.42);
+  }
+  .dot {
+    width: calc(var(--u) * 0.24);
+    height: calc(var(--u) * 0.24);
+  }
+  .headline {
+    margin-top: calc(var(--u) * 0.45);
+    font-size: var(--u);
+    line-height: 1.22;
+    max-width: 68%;
+  }
+  .headline-long {
+    font-size: calc(var(--u) * 0.85);
+  }
+  .sub {
+    margin-top: calc(var(--u) * 0.45);
+    padding-left: calc(var(--u) * 0.3);
+    border-left: calc(var(--u) * 0.08) solid #34d399;
+    font-size: calc(var(--u) * 0.42);
+  }
+  .footer {
+    font-size: calc(var(--u) * 0.34);
+  }
+  .ring {
+    width: min(30cqw, 52cqh);
+    aspect-ratio: 1;
+    right: 6cqw;
+    top: 14cqh;
+  }
+</style>

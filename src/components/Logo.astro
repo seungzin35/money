@@ -1,0 +1,16 @@
+---
+import { SITE } from 'astrowind:config';
+---
+
+<span
+  class="self-center ml-2 rtl:ml-0 rtl:mr-2 inline-flex items-center gap-2 text-2xl md:text-xl font-bold text-[#0f2440] whitespace-nowrap dark:text-white"
+  aria-label={SITE?.name}
+>
+  <span
+    class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[#0f2440] text-sm font-black text-[#34d399] dark:bg-emerald-500 dark:text-[#0f2440]"
+    aria-hidden="true">₩</span
+  >
+  <span aria-hidden="true" class="tracking-tight"
+    >ZIN <span class="text-emerald-600 dark:text-emerald-400">머니</span></span
+  >
+</span>

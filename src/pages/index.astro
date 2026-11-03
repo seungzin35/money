@@ -1,0 +1,182 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import Layout from '~/layouts/PageLayout.astro';
+
+import Grid from '~/components/blog/Grid.astro';
+import StructuredData from '~/components/common/StructuredData.astro';
+import { SITE, METADATA, I18N } from 'astrowind:config';
+import { categories } from '~/navigation';
+import { getBlogPermalink, getPermalink } from '~/utils/permalinks';
+import { fetchPosts } from '~/utils/blog';
+import favIconSvg from '~/assets/favicons/favicon.svg';
+
+const allPosts = await fetchPosts();
+const latestPosts = allPosts.slice(0, 6);
+const countByCategory = (name: string) => allPosts.filter((post) => post.category?.title === name).length;
+const categoryHref = (name: string) => categories.find(({ text }) => text === name)?.href ?? getBlogPermalink();
+
+// 첫 화면 오른쪽 "용어 카드". 각 용어는 해당 카테고리로 연결됩니다.
+const terms = [
+  { term: '신용점수', note: '대출·카드 심사의 기준', category: '신용·카드' },
+  { term: '예금 vs 적금', note: '목돈을 맡길까, 매달 모을까', category: '저축·투자 기초' },
+  { term: 'DSR', note: '소득 대비 갚아야 할 돈의 비율', category: '대출' },
+  { term: '실손보험', note: '실제 낸 병원비를 돌려받는 보험', category: '보험' },
+  { term: '세액공제', note: '낼 세금에서 바로 빼 주는 금액', category: '세금·월급' },
+];
+
+const principles = [
+  { icon: 'tabler:building-bank', title: '공식 출처', text: '금융감독원·국세청 등 공식 자료를 확인하고 링크합니다.' },
+  { icon: 'tabler:calendar-check', title: '기준일 표기', text: '금리·세율처럼 바뀌는 숫자에는 기준일을 적습니다.' },
+  { icon: 'tabler:hand-off', title: '상품 권유 없음', text: '특정 상품이나 종목을 추천하지 않습니다.' },
+];
+
+const metadata = {
+  title: SITE?.name,
+  ignoreTitleTemplate: true,
+};
+
+const organizationId = `${SITE?.site}/#organization`;
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE?.site}/#website`,
+    name: SITE?.name,
+    url: SITE?.site,
+    inLanguage: I18N?.language,
+    publisher: { '@id': organizationId },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': organizationId,
+    name: SITE?.name,
+    url: SITE?.site,
+    logo: new URL(favIconSvg.src, SITE?.site).toString(),
+    ...(METADATA?.twitter?.handle ? { sameAs: [`https://x.com/${METADATA.twitter.handle.replace(/^@/, '')}`] } : {}),
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <StructuredData slot="head" schema={structuredData} />
+
+  <!-- 인트로: 남색 패널 + 용어 카드 -->
+  <section class="bg-[#0f2440] text-white">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 md:py-20">
+      <div>
+        <p class="mb-4 inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-emerald-300">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          사회초년생 돈 관리 가이드
+        </p>
+        <h1 class="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+          첫 월급부터<br /><span class="text-emerald-400">돈 공부</span>, 기초부터
+        </h1>
+        <p class="mt-6 max-w-lg text-lg text-slate-300">
+          신용점수, 카드, 예금·적금, 대출, 보험, 연말정산까지. 꼭 알아야 할 개념을 공식 자료를 바탕으로 쉽게 정리합니다.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href={getBlogPermalink()}
+            class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-[#0f2440] transition hover:bg-emerald-400"
+          >
+            최신 글 보기 <Icon name="tabler:arrow-right" class="h-5 w-5" />
+          </a>
+          <a
+            href={getPermalink('/about')}
+            class="inline-flex items-center rounded-lg border border-white/25 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
+          >
+            블로그 소개
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
+        <p class="mb-3 flex items-center justify-between text-sm text-slate-400">
+          <span class="font-semibold text-slate-200">꼭 알아야 할 돈 용어</span>
+          <span>5개</span>
+        </p>
+        <ul class="divide-y divide-white/10">
+          {
+            terms.map(({ term, note, category }) => (
+              <li>
+                <a href={categoryHref(category)} class="group flex items-center justify-between gap-4 py-3">
+                  <span>
+                    <span class="block font-semibold text-white group-hover:text-emerald-300">{term}</span>
+                    <span class="block text-sm text-slate-400">{note}</span>
+                  </span>
+                  <span class="shrink-0 rounded-md bg-emerald-400/10 px-2 py-1 text-xs font-medium text-emerald-300">
+                    {category}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 운영 원칙 -->
+  <section class="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-3">
+      {
+        principles.map(({ icon, title, text }) => (
+          <div class="flex items-start gap-3">
+            <Icon name={icon} class="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <p>
+              <span class="block font-bold text-heading dark:text-white">{title}</span>
+              <span class="block text-sm text-muted dark:text-slate-400">{text}</span>
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 카테고리 -->
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
+    <h2 class="mb-6 font-heading text-2xl font-bold text-heading dark:text-white">분야별로 보기</h2>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        categories.map(({ text, description, icon, href }) => (
+          <a
+            href={href}
+            class="group flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-5 transition hover:border-emerald-500 hover:shadow-md lg:flex-col lg:gap-3 dark:border-slate-800 dark:bg-slate-900"
+          >
+            <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#0f2440] text-emerald-300 dark:bg-slate-800">
+              <Icon name={icon} class="h-6 w-6" />
+            </span>
+            <span>
+              <span class="block font-bold text-heading group-hover:text-primary dark:text-white">{text}</span>
+              <span class="mt-1 block text-sm text-muted dark:text-slate-400">{description}</span>
+              <span class="mt-2 block text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                글 {countByCategory(text)}개
+              </span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 최신 글 -->
+  <section class="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+    <div class="mb-6 flex items-end justify-between">
+      <h2 class="font-heading text-2xl font-bold text-heading dark:text-white">최신 글</h2>
+      <a href={getBlogPermalink()} class="text-sm font-medium text-muted hover:text-primary dark:text-slate-400">
+        전체 글 보기 →
+      </a>
+    </div>
+    {
+      latestPosts.length > 0 ? (
+        <Grid posts={latestPosts} />
+      ) : (
+        <p class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-muted dark:border-slate-700 dark:bg-slate-900">
+          첫 글을 준비하고 있어요. 곧 만나요!
+        </p>
+      )
+    }
+  </section>
+</Layout>

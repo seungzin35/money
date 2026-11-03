@@ -1,0 +1,111 @@
+---
+import { Icon } from 'astro-icon/components';
+
+import Layout from '~/layouts/PageLayout.astro';
+import { categories } from '~/navigation';
+import { getBlogPermalink, getPermalink } from '~/utils/permalinks';
+
+const metadata = {
+  title: '소개',
+  description: 'ZIN 머니는 사회초년생이 꼭 알아야 할 돈 관리 기초를 공식 자료를 바탕으로 쉽게 정리하는 블로그입니다.',
+};
+
+const email = 'seungzin@naver.com';
+
+const rules = [
+  {
+    title: '공식 자료로 확인합니다',
+    text: '금융감독원 파인, 국세청·홈택스, 국민건강보험공단 같은 공식 기관의 자료를 확인하고, 글마다 출처를 링크합니다.',
+  },
+  {
+    title: '바뀌는 숫자에는 기준일을 적습니다',
+    text: '금리, 세율, 공제 한도는 해마다 바뀔 수 있어서 "언제 기준인지"를 함께 적고, 직접 확인하는 방법도 알려 드립니다.',
+  },
+  {
+    title: '상품을 권하지 않습니다',
+    text: '특정 은행·카드·보험 상품이나 투자 종목을 추천하지 않습니다. 스스로 비교하고 고를 수 있는 기준을 설명합니다.',
+  },
+  {
+    title: '틀리면 바로 고칩니다',
+    text: '잘못된 내용을 알려 주시면 확인 후 수정하고, 수정한 날짜를 글에 표시합니다.',
+  },
+];
+---
+
+<Layout metadata={metadata}>
+  <section class="bg-[#0f2440] text-white">
+    <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6 md:py-20">
+      <p class="mb-3 text-sm font-semibold tracking-wide text-emerald-300">ABOUT</p>
+      <h1 class="font-heading text-4xl font-extrabold leading-tight tracking-tight md:text-5xl">
+        어려운 돈 이야기,<br /><span class="text-emerald-400">기초부터</span> 쉽게
+      </h1>
+      <p class="mt-6 text-lg leading-relaxed text-slate-300">
+        첫 월급을 받으면 갑자기 알아야 할 게 많아집니다. 신용카드는 언제 만들지, 적금은 어디에 들지, 월급명세서의
+        4대보험은 무엇인지. ZIN 머니는 이런 질문에 답하는 돈 관리 기초 블로그입니다.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+    <h2 class="font-heading text-2xl font-bold text-heading dark:text-white">이렇게 씁니다</h2>
+    <ol class="mt-6 space-y-3">
+      {
+        rules.map(({ title, text }, index) => (
+          <li class="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#0f2440] text-sm font-bold text-emerald-300">
+              {index + 1}
+            </span>
+            <span>
+              <span class="block font-bold text-heading dark:text-white">{title}</span>
+              <span class="mt-1 block text-muted dark:text-slate-400">{text}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h2 class="mt-14 font-heading text-2xl font-bold text-heading dark:text-white">다루는 분야</h2>
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+      {
+        categories.map(({ text, description, icon, href }) => (
+          <li>
+            <a
+              href={href}
+              class="flex h-full items-start gap-4 rounded-xl border border-slate-200 bg-white p-5 transition hover:border-emerald-500 dark:border-slate-800 dark:bg-slate-900"
+            >
+              <Icon name={icon} class="mt-0.5 h-6 w-6 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>
+                <span class="block font-bold text-heading dark:text-white">{text}</span>
+                <span class="block text-sm text-muted dark:text-slate-400">{description}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="prose prose-lg mt-14 max-w-none dark:prose-invert">
+      <h2>운영자</h2>
+      <p>
+        금융 전문가가 아닌 개인이 공식 자료를 찾아 공부하며 정리합니다. 같은 운영자가 IT 생활 정보 블로그
+        <a href="https://zinnote.kr">ZIN 노트</a>도 함께 운영하고 있습니다. 이 블로그의 글은 일반 정보이며, 중요한
+        결정은 꼭 전문가와 상의해 주세요. 자세한 내용은 <a href={getPermalink('/disclaimer')}>면책 고지</a>를 확인해
+        주세요.
+      </p>
+
+      <h2>연락하기</h2>
+      <p>
+        틀린 내용이 있거나 다뤄 줬으면 하는 주제가 있다면 편하게 알려 주세요. <a href={`mailto:${email}`}>{email}</a>
+      </p>
+    </div>
+
+    <div class="mt-10">
+      <a
+        href={getBlogPermalink()}
+        class="inline-flex items-center gap-2 rounded-lg bg-[#0f2440] px-5 py-3 font-semibold text-white transition hover:bg-[#16345c] dark:bg-emerald-500 dark:text-[#0f2440]"
+      >
+        글 보러 가기 <Icon name="tabler:arrow-right" class="h-5 w-5" />
+      </a>
+    </div>
+  </section>
+</Layout>

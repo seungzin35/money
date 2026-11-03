@@ -1,0 +1,59 @@
+---
+// Pretendard is loaded from a CDN stylesheet in Layout.astro (Korean + Latin).
+// To switch typefaces, change that <link> and repoint `--aw-font-*` below.
+---
+
+<style is:inline>
+  :root {
+    --aw-font-sans:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    --aw-font-serif:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    --aw-font-heading:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+
+    --aw-color-primary: rgb(4 120 87);
+    --aw-color-secondary: rgb(15 36 64);
+    --aw-color-accent: rgb(16 185 129);
+
+    --aw-color-text-heading: rgb(15 36 64);
+    --aw-color-text-default: rgb(30 41 59);
+    --aw-color-text-muted: rgb(71 85 105);
+    --aw-color-bg-page: rgb(248 250 252);
+
+    --aw-color-bg-page-dark: rgb(8 17 31);
+
+    ::selection {
+      background-color: rgb(167 243 208);
+    }
+  }
+
+  .dark {
+    --aw-font-sans:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    --aw-font-serif:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    --aw-font-heading:
+      'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', sans-serif;
+
+    --aw-color-primary: rgb(52 211 153);
+    --aw-color-secondary: rgb(110 231 183);
+    --aw-color-accent: rgb(16 185 129);
+
+    --aw-color-text-heading: rgb(247, 248, 248);
+    --aw-color-text-default: rgb(229 236 246);
+    --aw-color-text-muted: rgb(229 236 246 / 66%);
+    --aw-color-bg-page: rgb(8 17 31);
+
+    ::selection {
+      background-color: black;
+      color: snow;
+    }
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
+import { blogCategoryRobots, getStaticPathsBlogCategory } from '~/utils/blog';
+
+import Layout from '~/layouts/PageLayout.astro';
+import { categories } from '~/navigation';
+import CategoryNav from '~/components/blog/CategoryNav.astro';
+import BlogList from '~/components/blog/List.astro';
+import Headline from '~/components/blog/Headline.astro';
+import Pagination from '~/components/blog/Pagination.astro';
+import Breadcrumbs from '~/components/common/Breadcrumbs.astro';
+import { getPermalink, getBlogPermalink } from '~/utils/permalinks';
+
+export const prerender = true;
+
+export const getStaticPaths = (async ({ paginate }) => {
+  return await getStaticPathsBlogCategory({ paginate });
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths> & { category: Record<string, string> };
+
+const { page, category } = Astro.props as Props;
+
+const currentPage = page.currentPage ?? 1;
+
+const categoryInfo = categories.find(({ text }) => text === category.title);
+
+const breadcrumbs = [
+  { text: '홈', href: getPermalink('/') },
+  { text: '블로그', href: getBlogPermalink() },
+  ...(currentPage > 1
+    ? [{ text: category.title, href: getPermalink(category.slug, 'category') }, { text: `${currentPage}페이지` }]
+    : [{ text: category.title }]),
+];
+
+const metadata = {
+  title: `${category.title}${currentPage > 1 ? ` — ${currentPage}페이지` : ''}`,
+  description: `${category.title} 카테고리의 글 모음입니다.`,
+  robots: {
+    index: blogCategoryRobots?.index,
+    follow: blogCategoryRobots?.follow,
+  },
+};
+---
+
+<Layout metadata={metadata}>
+  <Breadcrumbs bar items={breadcrumbs} />
+  <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <Headline subtitle={categoryInfo?.description}>{category.title}</Headline>
+    <CategoryNav current={category.title} class="-mt-4 mb-12 md:-mt-8" />
+    <BlogList posts={page.data} />
+    <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
+  </section>
+</Layout>

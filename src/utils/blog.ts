@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import type { Post, Taxonomy } from '~/types';
 import { APP_BLOG } from 'astrowind:config';
 import { cleanSlug, trimSlash, BLOG_BASE, POST_PERMALINK_PATTERN, CATEGORY_BASE, TAG_BASE } from './permalinks';
+import { categories as navCategories } from '~/navigation';
 
 const generatePermalink = async ({
   id,
@@ -210,6 +211,10 @@ export const getStaticPathsBlogCategory = async ({ paginate }: { paginate: Pagin
 
   const posts = await fetchPosts();
   const categories: Record<string, Taxonomy> = {};
+  // Every menu category gets a page, even before its first post (otherwise menu links 404).
+  navCategories.forEach(({ text }) => {
+    categories[cleanSlug(text)] = { slug: cleanSlug(text), title: text };
+  });
   posts.map((post) => {
     if (post.category?.slug) {
       categories[post.category.slug] = post.category;

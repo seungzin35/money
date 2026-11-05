@@ -37,7 +37,7 @@ const metadata = {
   title: `${category.title}${currentPage > 1 ? ` — ${currentPage}페이지` : ''}`,
   description: `${category.title} 카테고리의 글 모음입니다.`,
   robots: {
-    index: blogCategoryRobots?.index,
+    index: blogCategoryRobots?.index && page.data.length > 0,
     follow: blogCategoryRobots?.follow,
   },
 };
@@ -48,7 +48,15 @@ const metadata = {
   <section class="px-4 md:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
     <Headline subtitle={categoryInfo?.description}>{category.title}</Headline>
     <CategoryNav current={category.title} class="-mt-4 mb-12 md:-mt-8" />
-    <BlogList posts={page.data} />
+    {
+      page.data.length > 0 ? (
+        <BlogList posts={page.data} />
+      ) : (
+        <p class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-muted dark:border-slate-700 dark:bg-slate-900">
+          이 분야의 첫 글을 준비하고 있어요. 곧 올라와요!
+        </p>
+      )
+    }
     <Pagination prevUrl={page.url.prev} nextUrl={page.url.next} />
   </section>
 </Layout>

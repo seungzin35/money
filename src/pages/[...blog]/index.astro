@@ -21,6 +21,7 @@ import RelatedPosts from '~/components/blog/RelatedPosts.astro';
 import Breadcrumbs from '~/components/common/Breadcrumbs.astro';
 import StructuredData from '~/components/common/StructuredData.astro';
 import { SITE } from 'astrowind:config';
+import { isEnglishCategory, enCategoryHref } from '~/navigation';
 
 export const prerender = true;
 
@@ -79,9 +80,12 @@ const articleSchema = {
   mainEntityOfPage: String(url),
 };
 
+const isEn = isEnglishCategory(post.category?.title);
+const lang = isEn ? 'en' : undefined;
+
 const breadcrumbs = [
-  { text: '홈', href: getPermalink('/') },
-  ...(isBlogListRouteEnabled ? [{ text: '블로그', href: getBlogPermalink() }] : []),
+  { text: isEn ? 'Home' : '홈', href: getPermalink('/') },
+  ...(isBlogListRouteEnabled && !isEn ? [{ text: '블로그', href: getBlogPermalink() }] : []),
   ...(post.category && isBlogCategoryRouteEnabled
     ? [{ text: post.category.title, href: getPermalink(post.category.slug, 'category') }]
     : []),
@@ -89,12 +93,12 @@ const breadcrumbs = [
 ];
 ---
 
-<Layout metadata={metadata}>
+<Layout metadata={metadata} lang={lang}>
   <StructuredData slot="head" schema={articleSchema} />
   <Breadcrumbs bar hideCurrent items={breadcrumbs} />
-  <SinglePost post={{ ...post, image: image }} url={url}>
+  <SinglePost post={{ ...post, image: image }} url={url} lang={lang}>
     {post.Content && <post.Content />}
   </SinglePost>
-  <ToBlogLink />
-  <RelatedPosts post={post} />
+  {isEn ? <ToBlogLink href={enCategoryHref} label="Back to Korea Life Guide" /> : <ToBlogLink />}
+  <RelatedPosts post={post} lang={lang} />
 </Layout>

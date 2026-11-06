@@ -17,16 +17,20 @@ import { ClientRouter } from 'astro:transitions';
 
 import type { MetaData as MetaDataType } from '~/types';
 
+import { enCategoryHref } from '~/navigation';
+
 export interface Props {
   metadata?: MetaDataType;
+  lang?: string;
 }
 
-const { metadata = {} } = Astro.props;
+const { metadata = {}, lang } = Astro.props;
 const { language, textDirection } = I18N;
+const pageLang = lang || language;
 ---
 
 <!doctype html>
-<html lang={language} dir={textDirection} class="2xl:text-[19px]">
+<html lang={pageLang} dir={textDirection} class="2xl:text-[19px]">
   <head>
     <CommonMeta />
     <Favicons />
@@ -59,8 +63,60 @@ const { language, textDirection } = I18N;
   </head>
 
   <body class="antialiased text-default bg-page min-h-screen flex flex-col break-keep">
+    {
+      pageLang !== 'en' && (
+        <div
+          id="en-banner"
+          hidden
+          lang="en"
+          class="bg-slate-900 px-4 py-2 text-center text-sm text-white dark:bg-emerald-900"
+        >
+          <a href={enCategoryHref} class="font-medium underline underline-offset-2">
+            Not Korean? Read our English guides for life in Korea →
+          </a>
+          <button
+            type="button"
+            id="en-banner-close"
+            class="ml-3 align-middle text-slate-300 hover:text-white"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+      )
+    }
     <slot />
 
     <Intersect />
+    <script is:inline>
+      // 브라우저 언어가 한국어가 아닌 방문자에게만 영어 안내 띠를 보여 줍니다. (자동 이동은 하지 않음)
+      (() => {
+        const setup = () => {
+          const bar = document.getElementById('en-banner');
+          if (!bar) return;
+          const langs = navigator.languages?.length ? navigator.languages : [navigator.language || ''];
+          const korean = langs.some((l) => String(l).toLowerCase().startsWith('ko'));
+          let closed = false;
+          try {
+            closed = localStorage.getItem('enBannerClosed') === '1';
+          } catch {
+            // 저장소를 못 쓰는 브라우저에서는 매번 보여 줍니다.
+          }
+          if (korean || closed) return;
+          bar.hidden = false;
+          const btn = document.getElementById('en-banner-close');
+          if (btn)
+            btn.onclick = () => {
+              bar.hidden = true;
+              try {
+                localStorage.setItem('enBannerClosed', '1');
+              } catch {
+                // 무시
+              }
+            };
+        };
+        document.addEventListener('astro:page-load', setup);
+      })();
+    </script>
   </body>
 </html>

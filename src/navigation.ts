@@ -37,6 +37,7 @@ export const headerData = {
 export const headerDataEn = {
   links: [
     { text: 'Korea Life Guide', href: enCategoryHref },
+    { text: 'Free Tools', href: 'https://en-datatool.zinnote.kr/' },
     { text: '한국어 (Korean)', href: getBlogPermalink() },
   ],
   actions: [],
@@ -46,7 +47,10 @@ export const footerDataEn = {
   links: [
     {
       title: 'Guides',
-      links: [{ text: 'Korea Life Guide', href: enCategoryHref }],
+      links: [
+        { text: 'Korea Life Guide', href: enCategoryHref },
+        { text: 'Free Tools for Life in Korea', href: 'https://en-datatool.zinnote.kr/' },
+      ],
     },
     {
       title: 'Site',

@@ -7,7 +7,17 @@ export const categories = [
   { text: '대출', description: '금리 종류, 상환 방식, 전세대출 절차', icon: 'tabler:building-bank' },
   { text: '보험', description: '실손보험, 자동차보험, 보험 고르는 기준', icon: 'tabler:shield-check' },
   { text: '세금·월급', description: '월급명세서, 4대보험, 연말정산 기초', icon: 'tabler:receipt-tax' },
+  {
+    text: 'Korea Life Guide',
+    description: 'English guides for foreigners: Korean apps, payments, banking and daily life',
+    icon: 'tabler:world',
+  },
 ].map((category) => ({ ...category, href: getPermalink(cleanSlug(category.text), 'category') }));
+
+// 외국인용 영어 글 카테고리. 이 카테고리의 글과 목록은 영어 화면(메뉴·버튼)으로 보여 줍니다.
+export const EN_CATEGORY = 'Korea Life Guide';
+export const enCategoryHref = getPermalink(cleanSlug(EN_CATEGORY), 'category');
+export const isEnglishCategory = (title?: string) => title === EN_CATEGORY;
 
 export const headerData = {
   links: [
@@ -22,6 +32,38 @@ export const headerData = {
     },
   ],
   actions: [],
+};
+
+export const headerDataEn = {
+  links: [
+    { text: 'Korea Life Guide', href: enCategoryHref },
+    { text: '한국어 (Korean)', href: getBlogPermalink() },
+  ],
+  actions: [],
+};
+
+export const footerDataEn = {
+  links: [
+    {
+      title: 'Guides',
+      links: [{ text: 'Korea Life Guide', href: enCategoryHref }],
+    },
+    {
+      title: 'Site',
+      links: [
+        { text: 'ZIN Money (Korean)', href: getBlogPermalink() },
+        { text: 'RSS', href: getAsset('/rss.xml') },
+      ],
+    },
+  ],
+  secondaryLinks: [
+    { text: 'Terms (KO)', href: getPermalink('/terms') },
+    { text: 'Privacy (KO)', href: getPermalink('/privacy') },
+  ],
+  socialLinks: [{ ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') }],
+  footNote: `
+    © ${new Date().getFullYear()} ZIN Money · General information only. Not financial advice.
+  `,
 };
 
 export const footerData = {

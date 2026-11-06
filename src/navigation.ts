@@ -7,6 +7,11 @@ export const categories = [
   { text: '대출', description: '금리 종류, 상환 방식, 전세대출 절차', icon: 'tabler:building-bank' },
   { text: '보험', description: '실손보험, 자동차보험, 보험 고르는 기준', icon: 'tabler:shield-check' },
   { text: '세금·월급', description: '월급명세서, 4대보험, 연말정산 기초', icon: 'tabler:receipt-tax' },
+  {
+    text: 'Korea Life Guide',
+    description: 'English guides for foreigners: Korean apps, banking, phones and daily life (영어 글)',
+    icon: 'tabler:world',
+  },
 ].map((category) => ({ ...category, href: getPermalink(cleanSlug(category.text), 'category') }));
 
 export const headerData = {

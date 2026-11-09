@@ -8,6 +8,8 @@
   "compatibility_date": "2026-09-01",
   "assets": {
     "directory": "./dist",
+    // Serve foo/index.html at /foo and redirect /foo/ -> /foo (matches trailingSlash: never / canonical).
+    "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page",
   },
 }

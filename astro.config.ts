@@ -26,11 +26,6 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 export default defineConfig({
   output: 'static',
 
-  // Write /foo as foo.html so Cloudflare Pages serves it at /foo without a trailing-slash redirect.
-  build: {
-    format: 'file',
-  },
-
   // Prefetch links as they enter the viewport for snappier navigations
   // (works together with <ClientRouter />, which enables prefetch by default).
   prefetch: {
